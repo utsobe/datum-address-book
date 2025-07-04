@@ -3,12 +3,18 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
-  static const HOME = _Paths.HOME;
-  static const ADDRESS_BOOK = _Paths.ADDRESS_BOOK;
+  static const home = _Paths.home;
+  static const addressBook = _Paths.addressBook;
+  static const contactForm = _Paths.contactForm;
+  static const contactDetails = _Paths.contactDetails;
+  static const settings = _Paths.settings;
 }
 
 abstract class _Paths {
   _Paths._();
-  static const HOME = '/home';
-  static const ADDRESS_BOOK = '/address-book';
+  static const home = '/home';
+  static const addressBook = '/address-book';
+  static const contactForm = '/contact-form';
+  static const contactDetails = '/contact-details';
+  static const settings = '/settings';
 }
