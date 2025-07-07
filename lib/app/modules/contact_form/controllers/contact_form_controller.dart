@@ -133,7 +133,7 @@ class ContactFormController extends GetxController {
       // Refresh the address book
       final addressBookController = Get.find<AddressBookController>();
       await addressBookController.loadContacts();
-      
+
       // Refresh settings statistics if controller exists
       try {
         final settingsController = Get.find<SettingsController>();

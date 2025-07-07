@@ -130,7 +130,7 @@ class AddressBookController extends GetxController {
       isLoading.value = true;
       await _storageService.saveContact(contact);
       await loadContacts();
-      
+
       // Refresh settings statistics if controller exists
       try {
         final settingsController = Get.find<SettingsController>();
@@ -166,7 +166,7 @@ class AddressBookController extends GetxController {
       final updatedContact = contact.copyWith(updatedAt: DateTime.now());
       await _storageService.saveContact(updatedContact);
       await loadContacts();
-      
+
       // Refresh settings statistics if controller exists
       try {
         final settingsController = Get.find<SettingsController>();
@@ -209,7 +209,7 @@ class AddressBookController extends GetxController {
       }
 
       await loadContacts();
-      
+
       // Refresh settings statistics if controller exists
       try {
         final settingsController = Get.find<SettingsController>();

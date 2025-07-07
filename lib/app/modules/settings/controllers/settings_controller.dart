@@ -17,7 +17,7 @@ class SettingsController extends GetxController {
     // Load saved language preference
     currentLanguage.value =
         _storageService.getSetting('language', defaultValue: 'en') ?? 'en';
-    
+
     // Load initial statistics
     loadStatistics();
   }

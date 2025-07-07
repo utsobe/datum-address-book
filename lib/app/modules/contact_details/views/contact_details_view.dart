@@ -27,6 +27,17 @@ class ContactDetailsView extends GetView<ContactDetailsController> {
             expandedHeight: 300,
             pinned: true,
             backgroundColor: Theme.of(context).colorScheme.primary,
+            leading: IconButton(
+              icon: Icon(
+                Platform.isIOS
+                    ? Icons.arrow_back_ios_new_outlined
+                    : Icons.arrow_back,
+                color: Colors.white,
+                // size: 50,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
