@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../data/models/contact_model.dart';
+import '../modules/splash/bindings/splash_binding.dart';
+import '../modules/splash/views/splash_view.dart';
 import '../modules/address_book/bindings/address_book_binding.dart';
 import '../modules/address_book/views/address_book_view.dart';
 import '../modules/contact_form/bindings/contact_form_binding.dart';
@@ -18,9 +20,14 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const initial = Routes.addressBook;
+  static const initial = Routes.splash;
 
   static final routes = [
+    GetPage(
+      name: _Paths.splash,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       name: _Paths.home,
       page: () => const HomeView(),

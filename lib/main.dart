@@ -5,9 +5,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app/routes/app_pages.dart';
-import 'app/core/services/storage_service.dart';
-import 'app/core/services/themes/theme_service.dart';
-import 'app/core/language/localization_service.dart';
 import 'app/core/services/themes/app_themes.dart';
 import 'app/data/models/contact_model.dart';
 
@@ -20,29 +17,7 @@ void main() async {
   // Register Hive adapters
   if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(ContactAdapter());
-  } // Initialize services
-  print('Initializing StorageService...');
-  await Get.putAsync(() async {
-    final storageService = StorageService();
-    await storageService.onInit();
-    return storageService;
-  });
-
-  print('Initializing ThemeService...');
-  await Get.putAsync(() async {
-    final themeService = ThemeService();
-    await themeService.onInit();
-    return themeService;
-  });
-
-  print('Initializing LocalizationService...');
-  await Get.putAsync(() async {
-    final localizationService = LocalizationService();
-    await localizationService.onInit();
-    return localizationService;
-  });
-
-  print('All services initialized successfully');
+  }
 
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
@@ -73,8 +48,8 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('en', ''),
-        Locale('fr', ''),
-        Locale('es', ''),
+        Locale('ms', ''),
+        Locale('zh', ''),
       ],
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('en', ''),

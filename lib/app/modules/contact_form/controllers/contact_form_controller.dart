@@ -152,7 +152,13 @@ class ContactFormController extends GetxController {
         colorText: Colors.white,
       );
 
-      Get.back();
+      if (isEditing.value) {
+        // For edited contacts, just go back to previous page
+        Get.back();
+      } else {
+        // For new contacts, navigate to contact details page
+        Get.offAndToNamed('/contact-details', arguments: contact);
+      }
     } catch (e) {
       Get.snackbar(
         'Error',
