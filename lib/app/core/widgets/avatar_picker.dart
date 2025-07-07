@@ -19,6 +19,7 @@ class AvatarPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const size = 120.0;
+    final localization = LocalizationService.to;
 
     return GestureDetector(
       onTap: () => _showImagePicker(context),
@@ -39,7 +40,7 @@ class AvatarPicker extends StatelessWidget {
                 width: 2,
               ),
             ),
-            child: _buildAvatarContent(context, size),
+            child: _buildAvatarContent(context, size, localization),
           ),
 
           // Edit button
@@ -70,7 +71,11 @@ class AvatarPicker extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatarContent(BuildContext context, double size) {
+  Widget _buildAvatarContent(
+    BuildContext context,
+    double size,
+    LocalizationService localization,
+  ) {
     if (avatarPath != null && avatarPath!.isNotEmpty) {
       final file = File(avatarPath!);
       if (file.existsSync()) {
@@ -93,7 +98,7 @@ class AvatarPicker extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Add Photo',
+            localization.addPhoto,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(
                 context,
@@ -129,7 +134,7 @@ class AvatarPicker extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Change Profile Photo',
+              localization.changeProfilePhoto,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),

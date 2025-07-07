@@ -36,10 +36,10 @@ class SettingsController extends GetxController {
     switch (currentLanguage.value) {
       case 'en':
         return 'English';
-      case 'fr':
-        return 'Français';
-      case 'es':
-        return 'Español';
+      case 'ms':
+        return 'Bahasa Melayu';
+      case 'zh':
+        return '中文';
       default:
         return 'English';
     }
@@ -54,8 +54,8 @@ class SettingsController extends GetxController {
     Get.updateLocale(Locale(languageCode));
 
     Get.snackbar(
-      'Language Changed',
-      'Language has been changed to $currentLanguageName',
+      _localizationService.translate('language_changed'),
+      '${_localizationService.translate('language_changed_to')} $currentLanguageName',
       snackPosition: SnackPosition.BOTTOM,
     );
   }

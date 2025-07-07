@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 class LocalizationService extends GetxService {
   static const String fallbackLocale = 'en';
-  static const List<String> supportedLanguages = ['en', 'fr', 'es'];
+  static const List<String> supportedLanguages = ['en', 'ms', 'zh'];
 
   Map<String, String> _localizedStrings = {};
 
@@ -104,4 +104,12 @@ class LocalizationService extends GetxService {
   String get about => translate('about');
   String get version => translate('version');
   String get developer => translate('developer');
+  String get languageChanged => translate('language_changed');
+  String get languageChangedTo => translate('language_changed_to');
+  String get changeProfilePhoto => translate('change_profile_photo');
+  String get addPhoto => translate('add_photo');
+  String get statistics => translate('statistics');
+  String get totalContacts => translate('total_contacts');
+  String get appDescription => translate('app_description');
+  String get ok => translate('ok');
 }

@@ -55,5 +55,13 @@
   "import_contacts": "Import Contacts",
   "about": "About",
   "version": "Version",
-  "developer": "Developer"
+  "developer": "Developer",
+  "language_changed": "Language Changed",
+  "language_changed_to": "Language has been changed to",
+  "change_profile_photo": "Change Profile Photo",
+  "add_photo": "Add Photo",
+  "statistics": "Statistics",
+  "total_contacts": "Total Contacts",
+  "app_description": "A beautiful and modern address book app built with Flutter, featuring dark/light themes, multi-language support, and local storage with Hive.",
+  "ok": "OK"
 }

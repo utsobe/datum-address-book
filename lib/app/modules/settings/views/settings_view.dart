@@ -148,7 +148,7 @@ class SettingsView extends GetView<SettingsController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Statistics',
+                      localization.statistics,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -159,13 +159,13 @@ class SettingsView extends GetView<SettingsController> {
                       children: [
                         _buildStatItem(
                           context,
-                          'Total Contacts',
+                          localization.totalContacts,
                           controller.totalContacts.toString(),
                           Icons.contacts,
                         ),
                         _buildStatItem(
                           context,
-                          'Favorites',
+                          localization.favorites,
                           controller.totalFavorites.toString(),
                           Icons.favorite,
                         ),
@@ -293,18 +293,18 @@ class SettingsView extends GetView<SettingsController> {
               },
             ),
             ListTile(
-              title: const Text('Français'),
-              leading: const Text('🇫🇷'),
+              title: const Text('Bahasa Melayu'),
+              leading: const Text('��'),
               onTap: () {
-                controller.changeLanguage('fr');
+                controller.changeLanguage('ms');
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: const Text('Español'),
-              leading: const Text('🇪🇸'),
+              title: const Text('中文'),
+              leading: const Text('��'),
               onTap: () {
-                controller.changeLanguage('es');
+                controller.changeLanguage('zh');
                 Navigator.pop(context);
               },
             ),
@@ -337,15 +337,13 @@ class SettingsView extends GetView<SettingsController> {
             const SizedBox(height: 8),
             Text('${localization.developer}: Datum Developer'),
             const SizedBox(height: 16),
-            const Text(
-              'A beautiful and modern address book app built with Flutter, featuring dark/light themes, multi-language support, and local storage with Hive.',
-            ),
+            Text(localization.appDescription),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(localization.ok),
           ),
         ],
       ),
