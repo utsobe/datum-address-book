@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/services/localization_service.dart';
+import '../../../core/language/localization_service.dart';
 
 class SettingsController extends GetxController {
   final StorageService _storageService = StorageService.to;

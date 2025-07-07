@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../modules/contact_form/controllers/contact_form_controller.dart';
-import '../services/localization_service.dart';
+import '../language/localization_service.dart';
 
 class AvatarPicker extends StatelessWidget {
   final String? avatarPath;

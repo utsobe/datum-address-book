@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../data/models/contact_model.dart';
-import '../../../core/services/localization_service.dart';
+import '../../../core/language/localization_service.dart';
 import '../controllers/contact_details_controller.dart';
 
 class ContactDetailsView extends GetView<ContactDetailsController> {

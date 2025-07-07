@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/services/localization_service.dart';
+import '../../../core/language/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../address_book/controllers/address_book_controller.dart';
 import '../../settings/controllers/settings_controller.dart';

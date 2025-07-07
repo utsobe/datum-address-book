@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import '../themes/app_themes.dart';
+import 'app_themes.dart';
 
 enum AppThemeMode { light, dark, system }
 

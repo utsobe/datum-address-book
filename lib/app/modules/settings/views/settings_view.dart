@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/settings_controller.dart';
-import '../../../core/services/localization_service.dart';
-import '../../../core/services/theme_service.dart';
+import '../../../core/language/localization_service.dart';
+import '../../../core/services/themes/theme_service.dart';
 
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});

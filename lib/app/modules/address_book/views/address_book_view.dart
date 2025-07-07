@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/address_book_controller.dart';
-import '../../../core/services/localization_service.dart';
+import '../../../core/language/localization_service.dart';
 import '../../../core/widgets/contact_card.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/search_bar_widget.dart';

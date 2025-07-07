@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/storage_service.dart';
-import '../../../core/services/localization_service.dart';
+import '../../../core/language/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../settings/controllers/settings_controller.dart';
 

@@ -6,9 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app/routes/app_pages.dart';
 import 'app/core/services/storage_service.dart';
-import 'app/core/services/theme_service.dart';
-import 'app/core/services/localization_service.dart';
-import 'app/core/themes/app_themes.dart';
+import 'app/core/services/themes/theme_service.dart';
+import 'app/core/language/localization_service.dart';
+import 'app/core/services/themes/app_themes.dart';
 import 'app/data/models/contact_model.dart';
 
 void main() async {
