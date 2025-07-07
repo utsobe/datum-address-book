@@ -294,7 +294,7 @@ class SettingsView extends GetView<SettingsController> {
             ),
             ListTile(
               title: const Text('Bahasa Melayu'),
-              leading: const Text('��'),
+              leading: const Text('🇲🇾'),
               onTap: () {
                 controller.changeLanguage('ms');
                 Navigator.pop(context);
@@ -302,7 +302,7 @@ class SettingsView extends GetView<SettingsController> {
             ),
             ListTile(
               title: const Text('中文'),
-              leading: const Text('��'),
+              leading: const Text('🇨🇳'),
               onTap: () {
                 controller.changeLanguage('zh');
                 Navigator.pop(context);

@@ -194,6 +194,20 @@ class AppThemes {
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: lightSurface,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: lightTextPrimary,
+        ),
+        contentTextStyle: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: lightTextSecondary,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
     );
   }
 
@@ -361,6 +375,20 @@ class AppThemes {
         unselectedLabelStyle: GoogleFonts.poppins(fontSize: 12),
         type: BottomNavigationBarType.fixed,
         elevation: 8,
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: darkSurface,
+        titleTextStyle: GoogleFonts.poppins(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: darkTextPrimary,
+        ),
+        contentTextStyle: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: darkTextSecondary,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }
