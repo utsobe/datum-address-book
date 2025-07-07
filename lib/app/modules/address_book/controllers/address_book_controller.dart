@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/localization_service.dart';
 import '../../../data/models/contact_model.dart';
+import '../../settings/controllers/settings_controller.dart';
 
 class AddressBookController extends GetxController {
   final StorageService _storageService = StorageService.to;
@@ -27,7 +28,11 @@ class AddressBookController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadContacts();
+
+    // Wait a bit to ensure storage service is initialized
+    Future.delayed(const Duration(milliseconds: 100), () {
+      loadContacts();
+    });
 
     // Listen to search changes
     searchController.addListener(() {
@@ -46,17 +51,32 @@ class AddressBookController extends GetxController {
   Future<void> loadContacts() async {
     try {
       isLoading.value = true;
-      final loadedContacts = _storageService.getAllContacts();
 
-      // Sort contacts alphabetically
-      loadedContacts.sort((a, b) => a.displayName.compareTo(b.displayName));
+      // Check if storage service is initialized
+      if (_storageService.contactsBox.isOpen) {
+        final loadedContacts = _storageService.getAllContacts();
 
-      contacts.value = loadedContacts;
-      favoriteContacts.value = loadedContacts
-          .where((c) => c.isFavorite)
-          .toList();
-      _filterContacts();
+        // Sort contacts alphabetically
+        loadedContacts.sort((a, b) => a.displayName.compareTo(b.displayName));
+
+        contacts.value = loadedContacts;
+        favoriteContacts.value = loadedContacts
+            .where((c) => c.isFavorite)
+            .toList();
+        _filterContacts();
+
+        print('Loaded ${loadedContacts.length} contacts successfully');
+      } else {
+        // If box is not open, retry after a short delay
+        await Future.delayed(const Duration(milliseconds: 200));
+        if (_storageService.contactsBox.isOpen) {
+          await loadContacts();
+        } else {
+          throw Exception('Storage service not initialized');
+        }
+      }
     } catch (e) {
+      print('Error loading contacts: $e'); // Debug log
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.snackbar(
           'Error',
@@ -110,6 +130,14 @@ class AddressBookController extends GetxController {
       isLoading.value = true;
       await _storageService.saveContact(contact);
       await loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',
@@ -138,6 +166,14 @@ class AddressBookController extends GetxController {
       final updatedContact = contact.copyWith(updatedAt: DateTime.now());
       await _storageService.saveContact(updatedContact);
       await loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',
@@ -173,6 +209,14 @@ class AddressBookController extends GetxController {
       }
 
       await loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',

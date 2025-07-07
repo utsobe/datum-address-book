@@ -6,8 +6,18 @@ import '../controllers/contact_details_controller.dart';
 class ContactDetailsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ContactDetailsController>(
-      () => ContactDetailsController(Get.arguments as Contact),
-    );
+    Get.lazyPut<ContactDetailsController>(() {
+      final contact = Get.arguments;
+      print('ContactDetailsBinding received argument: $contact');
+      if (contact is Contact) {
+        return ContactDetailsController(contact);
+      } else {
+        print('ERROR: Invalid contact argument: $contact');
+        // Return a dummy contact to prevent crash
+        return ContactDetailsController(
+          Contact(firstName: 'Error', lastName: 'Contact'),
+        );
+      }
+    });
   }
 }

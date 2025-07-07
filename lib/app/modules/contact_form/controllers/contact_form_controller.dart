@@ -4,6 +4,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/services/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../address_book/controllers/address_book_controller.dart';
+import '../../settings/controllers/settings_controller.dart';
 
 class ContactFormController extends GetxController {
   final StorageService _storageService = StorageService.to;
@@ -88,12 +89,8 @@ class ContactFormController extends GetxController {
           _editingContact?.copyWith(
             firstName: firstNameController.text.trim(),
             lastName: lastNameController.text.trim(),
-            phone: phoneController.text.trim().isEmpty
-                ? null
-                : phoneController.text.trim(),
-            email: emailController.text.trim().isEmpty
-                ? null
-                : emailController.text.trim(),
+            phone: phoneController.text.trim(), // Required field
+            email: emailController.text.trim(), // Required field
             workPhone: workPhoneController.text.trim().isEmpty
                 ? null
                 : workPhoneController.text.trim(),
@@ -103,9 +100,7 @@ class ContactFormController extends GetxController {
             company: companyController.text.trim().isEmpty
                 ? null
                 : companyController.text.trim(),
-            address: addressController.text.trim().isEmpty
-                ? null
-                : addressController.text.trim(),
+            address: addressController.text.trim(), // Required field
             notes: notesController.text.trim().isEmpty
                 ? null
                 : notesController.text.trim(),
@@ -115,12 +110,8 @@ class ContactFormController extends GetxController {
           Contact(
             firstName: firstNameController.text.trim(),
             lastName: lastNameController.text.trim(),
-            phone: phoneController.text.trim().isEmpty
-                ? null
-                : phoneController.text.trim(),
-            email: emailController.text.trim().isEmpty
-                ? null
-                : emailController.text.trim(),
+            phone: phoneController.text.trim(), // Required field
+            email: emailController.text.trim(), // Required field
             workPhone: workPhoneController.text.trim().isEmpty
                 ? null
                 : workPhoneController.text.trim(),
@@ -130,9 +121,7 @@ class ContactFormController extends GetxController {
             company: companyController.text.trim().isEmpty
                 ? null
                 : companyController.text.trim(),
-            address: addressController.text.trim().isEmpty
-                ? null
-                : addressController.text.trim(),
+            address: addressController.text.trim(), // Required field
             notes: notesController.text.trim().isEmpty
                 ? null
                 : notesController.text.trim(),
@@ -144,6 +133,14 @@ class ContactFormController extends GetxController {
       // Refresh the address book
       final addressBookController = Get.find<AddressBookController>();
       await addressBookController.loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',

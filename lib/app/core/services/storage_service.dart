@@ -15,24 +15,36 @@ class StorageService extends GetxService {
   @override
   Future<void> onInit() async {
     super.onInit();
+    print('StorageService.onInit() starting...');
     await _initializeHive();
+    print('StorageService.onInit() completed');
   }
 
   Future<void> _initializeHive() async {
-    // Get application documents directory
-    final appDocumentDir = await getApplicationDocumentsDirectory();
+    try {
+      // Get application documents directory
+      final appDocumentDir = await getApplicationDocumentsDirectory();
+      print('App documents directory: ${appDocumentDir.path}');
 
-    // Initialize Hive with the path
-    Hive.init(appDocumentDir.path);
+      // Initialize Hive with the path
+      Hive.init(appDocumentDir.path);
 
-    // Register adapters
-    if (!Hive.isAdapterRegistered(0)) {
-      Hive.registerAdapter(ContactAdapter());
+      // Register adapters
+      if (!Hive.isAdapterRegistered(0)) {
+        Hive.registerAdapter(ContactAdapter());
+        print('Contact adapter registered');
+      }
+
+      // Open boxes
+      _contactsBox = await Hive.openBox<Contact>('contacts');
+      _settingsBox = await Hive.openBox('settings');
+
+      print('Hive boxes opened successfully');
+      print('Contacts box has ${_contactsBox.length} items');
+    } catch (e) {
+      print('Error initializing Hive: $e');
+      rethrow;
     }
-
-    // Open boxes
-    _contactsBox = await Hive.openBox<Contact>('contacts');
-    _settingsBox = await Hive.openBox('settings');
   }
 
   // Contact operations
@@ -49,7 +61,16 @@ class StorageService extends GetxService {
   }
 
   List<Contact> getAllContacts() {
-    return _contactsBox.values.toList();
+    try {
+      final contacts = _contactsBox.values.toList();
+      print(
+        'StorageService.getAllContacts() returning ${contacts.length} contacts',
+      );
+      return contacts;
+    } catch (e) {
+      print('Error in getAllContacts: $e');
+      return [];
+    }
   }
 
   List<Contact> getFavoriteContacts() {

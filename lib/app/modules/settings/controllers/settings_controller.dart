@@ -8,6 +8,8 @@ class SettingsController extends GetxController {
   final LocalizationService _localizationService = LocalizationService.to;
 
   final currentLanguage = 'en'.obs;
+  final totalContacts = 0.obs;
+  final totalFavorites = 0.obs;
 
   @override
   void onInit() {
@@ -15,6 +17,19 @@ class SettingsController extends GetxController {
     // Load saved language preference
     currentLanguage.value =
         _storageService.getSetting('language', defaultValue: 'en') ?? 'en';
+    
+    // Load initial statistics
+    loadStatistics();
+  }
+
+  void loadStatistics() {
+    totalContacts.value = _storageService.totalContacts;
+    totalFavorites.value = _storageService.totalFavorites;
+  }
+
+  // Call this method when contacts are updated
+  void refreshStatistics() {
+    loadStatistics();
   }
 
   String get currentLanguageName {
@@ -44,7 +59,4 @@ class SettingsController extends GetxController {
       snackPosition: SnackPosition.BOTTOM,
     );
   }
-
-  int get totalContacts => _storageService.totalContacts;
-  int get totalFavorites => _storageService.totalFavorites;
 }

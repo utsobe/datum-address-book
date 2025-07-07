@@ -44,6 +44,43 @@ class ContactFormView extends GetView<ContactFormController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Required fields note
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Fields marked with * are required',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 // Avatar section
                 Center(
                   child: AvatarPicker(
@@ -64,7 +101,7 @@ class ContactFormView extends GetView<ContactFormController> {
                       child: TextFormField(
                         controller: controller.firstNameController,
                         decoration: InputDecoration(
-                          labelText: localization.firstName,
+                          labelText: '${localization.firstName} *',
                           prefixIcon: const Icon(Icons.person_outline),
                         ),
                         textCapitalization: TextCapitalization.words,
@@ -81,9 +118,15 @@ class ContactFormView extends GetView<ContactFormController> {
                       child: TextFormField(
                         controller: controller.lastNameController,
                         decoration: InputDecoration(
-                          labelText: localization.lastName,
+                          labelText: '${localization.lastName} *',
                         ),
                         textCapitalization: TextCapitalization.words,
+                        validator: (value) {
+                          if (value?.trim().isEmpty ?? true) {
+                            return localization.requiredField;
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ],
@@ -102,10 +145,21 @@ class ContactFormView extends GetView<ContactFormController> {
                 TextFormField(
                   controller: controller.phoneController,
                   decoration: InputDecoration(
-                    labelText: localization.phone,
+                    labelText: '${localization.phone} *',
                     prefixIcon: const Icon(Icons.phone_outlined),
                   ),
                   keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return localization.requiredField;
+                    }
+                    // Basic phone validation - at least 7 digits
+                    final digitsOnly = value!.replaceAll(RegExp(r'[^\d]'), '');
+                    if (digitsOnly.length < 7) {
+                      return localization.invalidPhone;
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 16),
@@ -113,18 +167,19 @@ class ContactFormView extends GetView<ContactFormController> {
                 TextFormField(
                   controller: controller.emailController,
                   decoration: InputDecoration(
-                    labelText: localization.email,
+                    labelText: '${localization.email} *',
                     prefixIcon: const Icon(Icons.email_outlined),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value?.isNotEmpty == true) {
-                      final emailRegex = RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                      );
-                      if (!emailRegex.hasMatch(value!)) {
-                        return localization.invalidEmail;
-                      }
+                    if (value?.trim().isEmpty ?? true) {
+                      return localization.requiredField;
+                    }
+                    final emailRegex = RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                    );
+                    if (!emailRegex.hasMatch(value!)) {
+                      return localization.invalidEmail;
                     }
                     return null;
                   },
@@ -176,11 +231,17 @@ class ContactFormView extends GetView<ContactFormController> {
                 TextFormField(
                   controller: controller.addressController,
                   decoration: InputDecoration(
-                    labelText: localization.address,
+                    labelText: '${localization.address} *',
                     prefixIcon: const Icon(Icons.location_on_outlined),
                   ),
                   maxLines: 3,
                   textCapitalization: TextCapitalization.words,
+                  validator: (value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return localization.requiredField;
+                    }
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 16),

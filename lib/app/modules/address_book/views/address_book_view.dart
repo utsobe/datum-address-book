@@ -102,8 +102,12 @@ class AddressBookView extends GetView<AddressBookController> {
                     final contact = controller.filteredContacts[index];
                     return ContactCard(
                       contact: contact,
-                      onTap: () =>
-                          Get.toNamed('/contact-details', arguments: contact),
+                      onTap: () {
+                        print(
+                          'Navigating to contact details for: ${contact.displayName}',
+                        );
+                        Get.toNamed('/contact-details', arguments: contact);
+                      },
                       onFavoriteToggle: () =>
                           controller.toggleFavorite(contact),
                       onDelete: () async {

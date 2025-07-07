@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../data/models/contact_model.dart';
@@ -38,8 +39,27 @@ class AppPages {
     GetPage(
       name: _Paths.contactDetails,
       page: () {
-        final contact = Get.arguments as Contact;
-        return ContactDetailsView(contact: contact);
+        final contact = Get.arguments;
+        print('ContactDetailsView route received argument: $contact');
+        if (contact is Contact) {
+          return ContactDetailsView(contact: contact);
+        } else {
+          print('ERROR: Invalid contact argument in route: $contact');
+          // Navigate back if invalid argument
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Get.back();
+            Get.snackbar(
+              'Error',
+              'Invalid contact data',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+            );
+          });
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
       },
       binding: ContactDetailsBinding(),
     ),

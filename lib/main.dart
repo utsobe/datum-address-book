@@ -20,12 +20,29 @@ void main() async {
   // Register Hive adapters
   if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(ContactAdapter());
-  }
+  } // Initialize services
+  print('Initializing StorageService...');
+  await Get.putAsync(() async {
+    final storageService = StorageService();
+    await storageService.onInit();
+    return storageService;
+  });
 
-  // Initialize services
-  Get.put(StorageService());
-  Get.put(ThemeService());
-  Get.put(LocalizationService());
+  print('Initializing ThemeService...');
+  await Get.putAsync(() async {
+    final themeService = ThemeService();
+    await themeService.onInit();
+    return themeService;
+  });
+
+  print('Initializing LocalizationService...');
+  await Get.putAsync(() async {
+    final localizationService = LocalizationService();
+    await localizationService.onInit();
+    return localizationService;
+  });
+
+  print('All services initialized successfully');
 
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([

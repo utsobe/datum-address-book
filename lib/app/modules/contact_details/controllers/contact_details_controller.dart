@@ -4,6 +4,7 @@ import '../../../core/services/storage_service.dart';
 import '../../../core/services/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../address_book/controllers/address_book_controller.dart';
+import '../../settings/controllers/settings_controller.dart';
 
 class ContactDetailsController extends GetxController {
   final StorageService _storageService = StorageService.to;
@@ -28,6 +29,14 @@ class ContactDetailsController extends GetxController {
       // Refresh the address book
       final addressBookController = Get.find<AddressBookController>();
       await addressBookController.loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',
@@ -57,6 +66,14 @@ class ContactDetailsController extends GetxController {
       // Refresh the address book
       final addressBookController = Get.find<AddressBookController>();
       await addressBookController.loadContacts();
+      
+      // Refresh settings statistics if controller exists
+      try {
+        final settingsController = Get.find<SettingsController>();
+        settingsController.refreshStatistics();
+      } catch (e) {
+        // SettingsController not found, ignore
+      }
 
       Get.snackbar(
         'Success',
