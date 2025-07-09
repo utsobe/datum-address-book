@@ -1,7 +1,5 @@
 # Datum Address Book 📱
 
-**APK Download**: https://drive.google.com/file/d/1xnVGcl6gY40MxJG_lTxJlO-FMD7CGkK1/view?usp=sharing
-
 A modern Flutter address book app with multi-language support, dark/light themes, and local storage. Developed for **Datum Clearmind Sdn Bhd** technical assessment. Download
 **APK**: https://drive.google.com/file/d/1xnVGcl6gY40MxJG_lTxJlO-FMD7CGkK1/view?usp=sharing
 
