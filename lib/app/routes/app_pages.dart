@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../data/models/contact_model.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/address_book/bindings/address_book_binding.dart';
@@ -12,8 +9,6 @@ import '../modules/contact_details/bindings/contact_details_binding.dart';
 import '../modules/contact_details/views/contact_details_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
-import '../modules/home/bindings/home_binding.dart';
-import '../modules/home/views/home_view.dart';
 
 part 'app_routes.dart';
 
@@ -29,11 +24,6 @@ class AppPages {
       binding: SplashBinding(),
     ),
     GetPage(
-      name: _Paths.home,
-      page: () => const HomeView(),
-      binding: HomeBinding(),
-    ),
-    GetPage(
       name: _Paths.addressBook,
       page: () => const AddressBookView(),
       binding: AddressBookBinding(),
@@ -46,27 +36,8 @@ class AppPages {
     GetPage(
       name: _Paths.contactDetails,
       page: () {
-        final contact = Get.arguments;
-        print('ContactDetailsView route received argument: $contact');
-        if (contact is Contact) {
-          return ContactDetailsView(contact: contact);
-        } else {
-          print('ERROR: Invalid contact argument in route: $contact');
-          // Navigate back if invalid argument
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Get.back();
-            Get.snackbar(
-              'Error',
-              'Invalid contact data',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.red,
-              colorText: Colors.white,
-            );
-          });
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+        // Contact argument will be passed to the controller via binding
+        return const ContactDetailsView();
       },
       binding: ContactDetailsBinding(),
     ),

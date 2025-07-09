@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/image_picker_service.dart';
 import '../../../core/language/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../settings/controllers/settings_controller.dart';
@@ -12,7 +10,6 @@ import '../../settings/controllers/settings_controller.dart';
 class AddressBookController extends GetxController {
   final StorageService _storageService = StorageService.to;
   final LocalizationService _localizationService = LocalizationService.to;
-  final ImagePicker _imagePicker = ImagePicker();
 
   // Observable variables
   final contacts = <Contact>[].obs;
@@ -51,6 +48,13 @@ class AddressBookController extends GetxController {
   Future<void> loadContacts() async {
     try {
       isLoading.value = true;
+
+      // Check if storage service is initialized and ready
+      if (!Get.isRegistered<StorageService>()) {
+        print('StorageService not registered, waiting...');
+        await Future.delayed(const Duration(milliseconds: 500));
+        return loadContacts(); // Retry
+      }
 
       // Check if storage service is initialized
       if (_storageService.contactsBox.isOpen) {
@@ -245,54 +249,10 @@ class AddressBookController extends GetxController {
     await updateContact(updatedContact);
   }
 
-  // Pick image for contact avatar
+  // Pick image for contact avatar using the dedicated service
   Future<String?> pickImage({bool fromCamera = false}) async {
-    try {
-      // Request permissions
-      PermissionStatus permission;
-      if (fromCamera) {
-        permission = await Permission.camera.request();
-      } else {
-        permission = await Permission.photos.request();
-      }
-
-      if (!permission.isGranted) {
-        Get.snackbar(
-          'Permission Required',
-          'Please grant permission to access ${fromCamera ? 'camera' : 'photos'}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
-        return null;
-      }
-
-      final XFile? image = await _imagePicker.pickImage(
-        source: fromCamera ? ImageSource.camera : ImageSource.gallery,
-        maxWidth: 512,
-        maxHeight: 512,
-        imageQuality: 70,
-      );
-
-      if (image != null) {
-        // Save image to app directory
-        final appDir = await getApplicationDocumentsDirectory();
-        final fileName = 'avatar_${DateTime.now().millisecondsSinceEpoch}.jpg';
-        final savedImage = await File(
-          image.path,
-        ).copy('${appDir.path}/$fileName');
-        return savedImage.path;
-      }
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick image',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-    return null;
+    final imagePickerService = ImagePickerService.to;
+    return await imagePickerService.pickImage(fromCamera: fromCamera);
   }
 
   // Show delete confirmation dialog

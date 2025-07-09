@@ -155,12 +155,24 @@ class ContactCard extends StatelessWidget {
       if (file.existsSync()) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(size / 2),
-          child: Image.file(file, width: size, height: size, fit: BoxFit.cover),
+          child: Image.file(
+            file,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback to initials if image fails to load
+              return _buildInitialsAvatar(context, size);
+            },
+          ),
         );
       }
     }
 
-    // Default avatar with initials
+    return _buildInitialsAvatar(context, size);
+  }
+
+  Widget _buildInitialsAvatar(BuildContext context, double size) {
     return Container(
       width: size,
       height: size,

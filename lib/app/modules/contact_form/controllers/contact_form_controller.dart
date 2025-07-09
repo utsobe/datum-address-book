@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/services/image_picker_service.dart';
 import '../../../core/language/localization_service.dart';
 import '../../../data/models/contact_model.dart';
 import '../../address_book/controllers/address_book_controller.dart';
@@ -74,7 +75,22 @@ class ContactFormController extends GetxController {
   }
 
   void removeAvatar() {
+    final currentAvatarPath = avatarPath.value;
     avatarPath.value = '';
+
+    // Delete the file in background
+    if (currentAvatarPath.isNotEmpty) {
+      deleteAvatarFile(currentAvatarPath);
+    }
+
+    Get.snackbar(
+      'Success',
+      'Photo removed successfully',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
   }
 
   Future<void> saveContact() async {
@@ -128,6 +144,13 @@ class ContactFormController extends GetxController {
             avatarPath: avatarPath.value.isEmpty ? null : avatarPath.value,
           );
 
+      // Clean up old avatar if it was changed during editing
+      if (isEditing.value &&
+          _editingContact?.avatarPath != null &&
+          _editingContact!.avatarPath != avatarPath.value) {
+        await deleteAvatarFile(_editingContact!.avatarPath);
+      }
+
       await _storageService.saveContact(contact);
 
       // Refresh the address book
@@ -150,13 +173,26 @@ class ContactFormController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        duration: const Duration(seconds: 2),
       );
 
+      // Navigate to contact details with proper stack management
       if (isEditing.value) {
-        // For edited contacts, just go back to previous page
-        Get.back();
+        print(
+          'ContactFormController: Editing mode - navigating to updated contact details',
+        );
+        // For editing: Go back to contact details (removing form from stack)
+        // Then replace the old contact details with updated one
+        Get.back(); // Remove form page
+        Get.offAndToNamed(
+          '/contact-details',
+          arguments: contact,
+        ); // Replace old contact details
       } else {
-        // For new contacts, navigate to contact details page
+        print(
+          'ContactFormController: Creating new contact - navigating to details page',
+        );
+        // For new contacts: Replace form page with contact details
         Get.offAndToNamed('/contact-details', arguments: contact);
       }
     } catch (e) {
@@ -166,6 +202,7 @@ class ContactFormController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
+        duration: const Duration(seconds: 3),
       );
     } finally {
       isLoading.value = false;
@@ -174,21 +211,38 @@ class ContactFormController extends GetxController {
 
   Future<void> pickImage({bool fromCamera = false}) async {
     try {
-      final addressBookController = Get.find<AddressBookController>();
-      final imagePath = await addressBookController.pickImage(
+      final imagePickerService = ImagePickerService.to;
+      final imagePath = await imagePickerService.pickImage(
         fromCamera: fromCamera,
       );
+
       if (imagePath != null) {
         setAvatarPath(imagePath);
+        Get.snackbar(
+          'Success',
+          fromCamera
+              ? 'Photo captured successfully'
+              : 'Photo selected successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
       }
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Failed to pick image',
+        'Failed to ${fromCamera ? 'capture' : 'select'} image. Please try again.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
+        duration: const Duration(seconds: 3),
       );
     }
+  }
+
+  Future<void> deleteAvatarFile(String? avatarPath) async {
+    final imagePickerService = ImagePickerService.to;
+    await imagePickerService.deleteImageFile(avatarPath);
   }
 }

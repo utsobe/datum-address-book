@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import '../../../core/services/storage_service.dart';
 import '../../../core/services/themes/theme_service.dart';
+import '../../../core/services/image_picker_service.dart';
 import '../../../core/language/localization_service.dart';
+import '../../address_book/controllers/address_book_controller.dart';
 
 class SplashController extends GetxController {
   final loadingStatus = 'Initializing...'.obs;
@@ -41,6 +43,22 @@ class SplashController extends GetxController {
         await localizationService.onInit();
         return localizationService;
       });
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Initialize ImagePickerService
+      loadingStatus.value = 'Setting up image picker...';
+      Get.put(ImagePickerService());
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Pre-initialize AddressBookController to ensure it's always available
+      loadingStatus.value = 'Loading contacts...';
+      await Get.putAsync(() async {
+        final controller = AddressBookController();
+        await controller.loadContacts(); // Pre-load contacts
+        return controller;
+      }, permanent: true);
 
       await Future.delayed(const Duration(milliseconds: 500));
 

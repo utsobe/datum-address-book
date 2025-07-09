@@ -5,206 +5,257 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../data/models/contact_model.dart';
 import '../../../core/language/localization_service.dart';
+import '../../../core/widgets/image_viewer.dart';
 import '../controllers/contact_details_controller.dart';
 
 class ContactDetailsView extends GetView<ContactDetailsController> {
-  final Contact contact;
-
-  const ContactDetailsView({super.key, required this.contact});
+  const ContactDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final localization = LocalizationService.to;
 
-    // Initialize controller with contact
-    Get.put(ContactDetailsController(contact));
-
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // App bar with hero avatar
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            leading: IconButton(
-              icon: Icon(
-                Platform.isIOS
-                    ? Icons.arrow_back_ios_new_outlined
-                    : Icons.arrow_back,
-                color: Colors.white,
-                // size: 50,
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.8),
-                    ],
-                  ),
+      body: Obx(() {
+        return CustomScrollView(
+          slivers: [
+            // App bar with hero avatar
+            SliverAppBar(
+              expandedHeight: 300,
+              pinned: true,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              leading: IconButton(
+                icon: Icon(
+                  Platform.isIOS
+                      ? Icons.arrow_back_ios_new_outlined
+                      : Icons.arrow_back,
+                  color: Colors.white,
+                  // size: 50,
                 ),
-                child: SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 60),
-                      _buildAvatar(context),
-                      const SizedBox(height: 16),
-                      Text(
-                        contact.displayName,
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                      if (contact.company?.isNotEmpty == true) ...[
-                        const SizedBox(height: 4),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.8),
+                      ],
+                    ),
+                  ),
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 60),
+                        Obx(() => _buildAvatar(context)),
+                        const SizedBox(height: 16),
                         Text(
-                          contact.company!,
-                          style: Theme.of(context).textTheme.titleMedium
+                          controller.contact.value.displayName,
+                          style: Theme.of(context).textTheme.headlineMedium
                               ?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.9),
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                           textAlign: TextAlign.center,
                         ),
+                        if (controller.contact.value.company?.isNotEmpty ==
+                            true) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            controller.contact.value.company!,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            actions: [
-              Obx(
-                () => IconButton(
-                  onPressed: controller.toggleFavorite,
-                  icon: Icon(
-                    controller.contact.value.isFavorite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: Colors.white,
+              actions: [
+                Obx(
+                  () => IconButton(
+                    onPressed: controller.toggleFavorite,
+                    icon: Icon(
+                      controller.contact.value.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert, color: Colors.white),
-                onSelected: (value) {
-                  switch (value) {
-                    case 'edit':
-                      Get.toNamed('/contact-form', arguments: contact);
-                      break;
-                    case 'delete':
-                      _showDeleteDialog(context);
-                      break;
-                    case 'share':
-                      _shareContact();
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.edit),
-                        const SizedBox(width: 8),
-                        Text(localization.edit),
-                      ],
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert, color: Colors.white),
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'edit':
+                        Get.toNamed(
+                          '/contact-form',
+                          arguments: controller.contact.value,
+                        );
+                        break;
+                      case 'delete':
+                        _showDeleteDialog(context);
+                        break;
+                      case 'share':
+                        _shareContact();
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit),
+                          const SizedBox(width: 8),
+                          Text(localization.edit),
+                        ],
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: 'share',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.share),
-                        const SizedBox(width: 8),
-                        Text(localization.share),
-                      ],
+                    PopupMenuItem(
+                      value: 'share',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.share),
+                          const SizedBox(width: 8),
+                          Text(localization.share),
+                        ],
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Text(
-                          localization.delete,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete, color: Colors.red),
+                          const SizedBox(width: 8),
+                          Text(
+                            localization.delete,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // Content
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // Quick actions
-                if (contact.primaryPhone.isNotEmpty ||
-                    contact.primaryEmail.isNotEmpty)
-                  _buildQuickActions(context),
-
-                const SizedBox(height: 24),
-
-                // Contact information
-                _buildContactInfo(context, localization),
-
-                const SizedBox(height: 24),
-              ]),
+                  ],
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+
+            // Content
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Quick actions
+                  if (controller.contact.value.primaryPhone.isNotEmpty ||
+                      controller.contact.value.primaryEmail.isNotEmpty)
+                    _buildQuickActions(context),
+
+                  const SizedBox(height: 24),
+
+                  // Contact information
+                  _buildContactInfo(context, localization),
+
+                  const SizedBox(height: 24),
+                ]),
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 
   Widget _buildAvatar(BuildContext context) {
     const size = 120.0;
+    final currentContact = controller.contact.value;
 
-    if (contact.avatarPath != null && contact.avatarPath!.isNotEmpty) {
-      final file = File(contact.avatarPath!);
+    print('Building avatar for contact: ${currentContact.displayName}');
+    print('Avatar path: ${currentContact.avatarPath}');
+
+    if (currentContact.avatarPath != null &&
+        currentContact.avatarPath!.isNotEmpty) {
+      final file = File(currentContact.avatarPath!);
+      print('File exists: ${file.existsSync()}');
+
       if (file.existsSync()) {
-        return Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 4),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-                spreadRadius: 5,
+        return GestureDetector(
+          onTap: () {
+            // Open image viewer for full-screen viewing with custom transition
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    ImageViewer(
+                      imagePath: currentContact.avatarPath!,
+                      heroTag: 'contact_avatar_${currentContact.id}',
+                    ),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                            CurvedAnimation(
+                              parent: animation,
+                              curve: Curves.easeInOut,
+                            ),
+                          ),
+                          child: child,
+                        ),
+                      );
+                    },
+                transitionDuration: const Duration(milliseconds: 300),
               ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(size / 2),
-            child: Image.file(
-              file,
-              width: size,
-              height: size,
-              fit: BoxFit.cover,
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 20,
+                  spreadRadius: 5,
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(size / 2),
+              child: Image.file(
+                file,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  print('Error loading avatar image: $error');
+                  return _buildDefaultAvatar(size, currentContact);
+                },
+              ),
             ),
           ),
         );
+      } else {
+        print('Avatar file does not exist, showing initials');
       }
+    } else {
+      print('No avatar path, showing initials');
     }
 
+    return _buildDefaultAvatar(size, currentContact);
+  }
+
+  Widget _buildDefaultAvatar(double size, Contact currentContact) {
     return Container(
       width: size,
       height: size,
@@ -215,7 +266,7 @@ class ContactDetailsView extends GetView<ContactDetailsController> {
       ),
       child: Center(
         child: Text(
-          contact.initials,
+          currentContact.initials,
           style: const TextStyle(
             fontSize: 36,
             fontWeight: FontWeight.bold,
@@ -228,31 +279,32 @@ class ContactDetailsView extends GetView<ContactDetailsController> {
 
   Widget _buildQuickActions(BuildContext context) {
     final actions = <Widget>[];
+    final currentContact = controller.contact.value;
 
-    if (contact.primaryPhone.isNotEmpty) {
+    if (currentContact.primaryPhone.isNotEmpty) {
       actions.addAll([
         _buildActionButton(
           context,
           icon: Icons.call,
           label: 'Call',
-          onTap: () => _makeCall(contact.primaryPhone),
+          onTap: () => _makeCall(currentContact.primaryPhone),
         ),
         _buildActionButton(
           context,
           icon: Icons.message,
           label: 'Message',
-          onTap: () => _sendMessage(contact.primaryPhone),
+          onTap: () => _sendMessage(currentContact.primaryPhone),
         ),
       ]);
     }
 
-    if (contact.primaryEmail.isNotEmpty) {
+    if (currentContact.primaryEmail.isNotEmpty) {
       actions.add(
         _buildActionButton(
           context,
           icon: Icons.email,
           label: 'Email',
-          onTap: () => _sendEmail(contact.primaryEmail),
+          onTap: () => _sendEmail(currentContact.primaryEmail),
         ),
       );
     }
@@ -312,84 +364,85 @@ class ContactDetailsView extends GetView<ContactDetailsController> {
     LocalizationService localization,
   ) {
     final infoItems = <Widget>[];
+    final currentContact = controller.contact.value;
 
     // Phone numbers
-    if (contact.phone?.isNotEmpty == true) {
+    if (currentContact.phone?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.phone,
           label: localization.mobile,
-          value: contact.phone!,
-          onTap: () => _makeCall(contact.phone!),
-          onLongPress: () => _copyToClipboard(contact.phone!),
+          value: currentContact.phone!,
+          onTap: () => _makeCall(currentContact.phone!),
+          onLongPress: () => _copyToClipboard(currentContact.phone!),
         ),
       );
     }
 
-    if (contact.workPhone?.isNotEmpty == true) {
+    if (currentContact.workPhone?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.work,
           label: '${localization.work} ${localization.phone}',
-          value: contact.workPhone!,
-          onTap: () => _makeCall(contact.workPhone!),
-          onLongPress: () => _copyToClipboard(contact.workPhone!),
+          value: currentContact.workPhone!,
+          onTap: () => _makeCall(currentContact.workPhone!),
+          onLongPress: () => _copyToClipboard(currentContact.workPhone!),
         ),
       );
     }
 
     // Emails
-    if (contact.email?.isNotEmpty == true) {
+    if (currentContact.email?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.email,
           label: localization.email,
-          value: contact.email!,
-          onTap: () => _sendEmail(contact.email!),
-          onLongPress: () => _copyToClipboard(contact.email!),
+          value: currentContact.email!,
+          onTap: () => _sendEmail(currentContact.email!),
+          onLongPress: () => _copyToClipboard(currentContact.email!),
         ),
       );
     }
 
-    if (contact.workEmail?.isNotEmpty == true) {
+    if (currentContact.workEmail?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.business,
           label: '${localization.work} ${localization.email}',
-          value: contact.workEmail!,
-          onTap: () => _sendEmail(contact.workEmail!),
-          onLongPress: () => _copyToClipboard(contact.workEmail!),
+          value: currentContact.workEmail!,
+          onTap: () => _sendEmail(currentContact.workEmail!),
+          onLongPress: () => _copyToClipboard(currentContact.workEmail!),
         ),
       );
     }
 
     // Address
-    if (contact.address?.isNotEmpty == true) {
+    if (currentContact.address?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.location_on,
           label: localization.address,
-          value: contact.address!,
-          onTap: () => _openMap(contact.address!),
-          onLongPress: () => _copyToClipboard(contact.address!),
+          value: currentContact.address!,
+          onTap: () => _openMap(currentContact.address!),
+          onLongPress: () => _copyToClipboard(currentContact.address!),
         ),
       );
     }
 
     // Notes
-    if (contact.notes?.isNotEmpty == true) {
+    if (currentContact.notes?.isNotEmpty == true) {
       infoItems.add(
         _buildInfoItem(
           context,
           icon: Icons.note,
           label: localization.notes,
-          value: contact.notes!,
-          onLongPress: () => _copyToClipboard(contact.notes!),
+          value: currentContact.notes!,
+          onLongPress: () => _copyToClipboard(currentContact.notes!),
         ),
       );
     }
@@ -482,6 +535,7 @@ class ContactDetailsView extends GetView<ContactDetailsController> {
   }
 
   void _shareContact() {
+    final contact = controller.contact.value;
     final contactInfo = StringBuffer();
     contactInfo.writeln(contact.displayName);
     if (contact.company?.isNotEmpty == true) {

@@ -16,6 +16,42 @@ class ContactDetailsController extends GetxController {
     contact.value = initialContact;
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    print(
+      'ContactDetailsController: onReady called for contact ${contact.value.displayName}',
+    );
+    print('ContactDetailsController: Avatar path: ${contact.value.avatarPath}');
+    // Force update to ensure reactive UI
+    contact.refresh();
+  }
+
+  /// Update the contact data (useful when returning from edit)
+  void updateContact(Contact updatedContact) {
+    contact.value = updatedContact;
+    print(
+      'ContactDetailsController: Updated contact to ${updatedContact.displayName}',
+    );
+  }
+
+  /// Refresh contact data from storage
+  Future<void> refreshContact() async {
+    try {
+      final refreshedContact = await _storageService.getContact(
+        contact.value.id,
+      );
+      if (refreshedContact != null) {
+        contact.value = refreshedContact;
+        print(
+          'ContactDetailsController: Refreshed contact from storage: ${refreshedContact.displayName}',
+        );
+      }
+    } catch (e) {
+      print('Error refreshing contact: $e');
+    }
+  }
+
   Future<void> toggleFavorite() async {
     try {
       final updatedContact = contact.value.copyWith(

@@ -6,7 +6,7 @@ import '../controllers/contact_details_controller.dart';
 class ContactDetailsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ContactDetailsController>(() {
+    Get.put<ContactDetailsController>(() {
       final contact = Get.arguments;
       print('ContactDetailsBinding received argument: $contact');
       if (contact is Contact) {
@@ -18,6 +18,6 @@ class ContactDetailsBinding extends Bindings {
           Contact(firstName: 'Error', lastName: 'Contact'),
         );
       }
-    });
+    }());
   }
 }
